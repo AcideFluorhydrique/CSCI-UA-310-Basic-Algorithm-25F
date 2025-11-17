@@ -1,0 +1,803 @@
+\lhead{\textbf{Basic Algorithms, Fall 2025 \\ CSCI-UA.0310-001}}
+\chead{\Large{\textbf{Homework 2}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ENTER NAME BELOW!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\rhead{\textbf{Professor Regev}\\\textbf{Name:} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}
+%REPLACE THE TILDES WITH YOUR NAME
+\runningheadrule
+\firstpageheadrule
+\cfoot{}
+
+\section*{Due September 22 (11:59 p.m.)}
+\intro
+
+\subsection*{1-0 List all your collaborators and sources: 
+(\texorpdfstring{$-\infty$}{-∞} points if left blank)}
+
+
+
+
+\vspace{0.75cm}
+
+
+
+\subsection*{Problem 2-1 -- Pigeonhole Principle (16 Points)}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.2\textwidth]{Images/new_box.png}
+    \caption{Sparse set of points in a unit square}
+    \label{fig:box}
+\end{figure}
+
+\begin{enumerate}
+    \item (2 point) State the Pigeon Hole Principle in your own words and give some intuition as to why it should be true.
+
+    \begin{solution}
+        \vspace{0.5cm}
+
+        If more objects (\emph{pigeons}) than containers (\emph{holes}) are to be placed into those containers, 
+        
+        then at least one container must contain at least two objects.
+        
+        Equivalently, there is no one-to-one function from a larger finite set to a smaller finite set
+
+        \vspace{0.5cm}
+        
+        Imagine placing $n$ balls into $m$ boxes with $n>m$:
+        
+        After the first $m$ balls, every box is occupied at most once; 
+        
+        the $(m+1)$-st ball must go into some already-occupied box, creating a collision.
+        
+        Counting also gives the same: the average load is $n/m>1$, so some box has load $\ge 2$
+        
+    \end{solution}
+    
+    \item (7 point) Here is a more formal statement of the Pigeon Hole Principle: Let $A$ and $B$ be finite sets such that $|A|>|B|$. Then there does not exist any one to one function $f:A \rightarrow B$. Prove this using induction.
+    
+    \begin{solution}
+    
+    \textbf{Claim} 
+    
+    Let $A$ and $B$ be finite sets with $|A|>|B|$. Then there is no one-to-one (injective) function $f: A \to B$.
+    
+    \medskip
+    \textbf{Pf:} 
+    
+    We prove the claim by induction on $m=|B|\in\mathbb{N}$.
+    
+    When $m=0$
+    
+    If $|B|=0$ and $|A|>|B|$, then $|A|\ge 1$. 
+    
+    There is no function at all from a nonempty set to the empty set, 
+    
+    hence certainly no injective function
+    
+    
+    Assume the statement holds for all finite sets $A',B'$ with $|B'|=m$ and $|A'|>|B'|$ 
+    
+    (i.e., there is no injective map $A'\to B'$). 
+    
+    We prove it for $|B''|=m+1$.
+
+    \vspace{0.5cm}
+    
+    Let $A$ and $B$ be finite sets with $|B|=m+1$ and $|A|>|B|$ (so $|A|\ge m+2$).
+    
+    Suppose, for the sake of contradiction, that there exists an injective function $f:A\to B$. 
+    
+    Pick any element $b\in B$ and consider two cases:
+    
+    \emph{Case 1: $b\notin f(A)$} 
+    
+    Then $f$ actually maps $A$ injectively into the $m$-element set $B\setminus\{b\}$
+    
+    Since $|A|\ge m+2>m$, this contradicts the induction hypothesis
+    
+    \emph{Case 2: $b\in f(A)$} 
+    
+    Choose $a\in A$ with $f(a)=b$. 
+    
+    Restrict $f$ to $A\setminus\{a\}$ and codomain $B\setminus\{b\}$ to obtain
+    \[
+     f\big|_{A\setminus\{a\}}: A\setminus\{a\}\longrightarrow B\setminus\{b\}
+    \]
+    
+    This restricted map is still injective:
+    
+    \quad \quad  distinct inputs in $A\setminus\{a\}$ have distinct images under $f$, and none equals $b$
+    
+    Now $|A\setminus\{a\}|=|A|-1\ge (m+2)-1=m+1>m$, while $|B\setminus\{b\}|=m$
+    
+    By the induction hypothesis, no such injective map can exist—a contradiction
+    
+    In both cases we reach a contradiction, so no injective function 
+    
+    $f:A\to B$ exists when $|A|>|B|$
+
+    QED
+    
+    
+    \qedhere
+    \end{solution}
+
+    
+    \item (7 points) Consider a unit square (side length is $1$ unit). A set of points $S$ is called \textit{sparse} if any two points in $S$ are at least $\frac{1}{4}$ distance away from each other. Prove that there exists a constant $C$ such that no sparse set of points within the square can contain more than $C$ many points. (One approach to proving this is to try to apply the Pigeon Hole Principle)
+    \begin{solution}
+    \vspace{0.5cm}
+    
+    We are given a unit square (side length 1) and a set $S$ of points inside it such that any two distinct points in $S$ are at least $\frac{1}{4}$ units apart. We must prove that there exists a constant $C$ such that $|S| \le C$, i.e., no such sparse set can have more than $C$ points.
+    
+    \medskip
+    \noindent
+    We will partition the unit square into smaller regions (``pigeonholes'') s.t. if two points fall into the same region, 
+    
+    they must be closer than $\frac{1}{4}$, violating the sparsity condition
+    
+    Therefore, each region can contain at most one point from $S$
+    
+    The total number of regions gives an upper bound $C$ on $|S|$
+    
+    \vspace{1cm}
+    
+    Divide the unit square into a grid of smaller squares, each of side length $\frac{1}{4}$
+    
+    Since the unit square has side length 1, 
+    
+    we can fit exactly 4 such small squares along each dimension:
+    
+    \[
+    \text{Number of small squares} = 4 \times 4 = 16.
+    \]
+    
+    Each small square has side length $\frac{1}{4}$, 
+    
+    so the maximum distance between any two points within one small square is the length of its diagonal:
+    
+    \[
+    \text{Diagonal} = \sqrt{ \left( \frac{1}{4} \right)^2 + \left( \frac{1}{4} \right)^2 } = \sqrt{ \frac{2}{16} } = \sqrt{ \frac{1}{8} } = \frac{1}{2\sqrt{2}} \approx 0.3535 < 0.5.
+    \]
+    
+    But $\frac{1}{2\sqrt{2}} \approx 0.3535 > \frac{1}{4}$ !
+    
+    
+    So two points in the same small square \emph{could} be farther than $\frac{1}{4}$ apart
+    
+    For example, maybe at opposite corners
+    
+    This means we need smaller squares so that the \emph{maximum} distance within any square is \emph{less than} $\frac{1}{4}$
+    
+
+    
+    Try side length $\frac{1}{6}$:
+    
+    \[
+    \text{Diagonal} = \sqrt{ \frac{2}{36} } = \frac{\sqrt{2}}{6} \approx \frac{1.414}{6} \approx 0.2357 < 0.25.
+    \]
+    
+    So if we use squares of side length $\frac{1}{6}$, 
+    
+    then any two points within the same square are at most $\approx 0.2357 < \frac{1}{4}$ apart
+    
+
+    
+    The unit square has side length 1
+    
+    
+    We can fit $\left\lfloor \frac{1}{1/6} \right\rfloor = 6$ full squares along each side
+    
+    But since $6 \times \frac{1}{6} = 1$, 
+    
+    we can tile the entire unit square perfectly with $6 \times 6 = 36$ small squares,
+    
+    each of side $\frac{1}{6}$, with no gaps or overlaps
+    
+    
+    Suppose, for contradiction, that $S$ has more than 36 points
+    
+    Since there are only 36 small squares, by the Pigeonhole Principle, at least one small square must contain at least two points from $S$
+
+    
+    
+    But any two points in the same small square are at most $\frac{\sqrt{2}}{6} \approx 0.2357 < \frac{1}{4}$ apart, 
+    
+    which contradicts the assumption that $S$ is sparse, 
+    
+    
+    \quad \quad i.e. every pair of points is at least $\frac{1}{4}$ apart
+    
+    Therefore, $S$ can have at most 36 points
+    
+    
+    We can take $C = 36$. Thus, no sparse set in the unit square can contain more than 36 points
+    
+
+    
+    \qedhere
+    \end{solution}
+\end{enumerate}
+
+
+
+
+\section*{Problem 2-2 -- Recurrence Practice (24 points)}
+(6 points each) Solve the following recurrences by finding a function $f(n)$ such that $T(n) = O(f(n))$ using the method specified. Show your work. You only need to show an upper bound for each (i.e., big-$O$), but you will only get partial credit if you do not find the best possible asymptotic. 
+
+\begin{enumerate}
+    \item Use the recurrence tree method to solve $T(n) = 4T(n/2) + n$ with $T(1)=T(0)=3$.
+        
+        
+        % \begin{solution}
+        % \vspace{\stretch{1}}
+        %     \vspace{4 cm}
+        %     Using the recurrence tre
+        % \end{solution}
+
+        \begin{solution}
+
+            \vspace{1cm}
+
+        \begin{verbatim}
+                      T(n)                  [Root, extra cost: n]
+               /    |    \    \
+          T(n/2) T(n/2) T(n/2) T(n/2)       [Layer 0 total cost: n]
+         /|\\    /|\\    /|\\    /|\\
+      (Each branches into 4 sub-nodes, pattern repeats)
+     T(n/4) ... (4^2 = 16 nodes total at this layer)
+     /|\ ... (continue 4-way branching per node)
+        ...
+        [Layer 1 total cost: 4 * (n/2) = 2n]
+        ...
+        [Layer 2 total cost: 16 * (n/4) = 4n]
+        ...
+        [Layer i total cost: 4^i * (n / 2^i) = n * 2^i]
+        ...
+        (Tree height: log2 n levels, from layer 0 to log2 n - 1)
+        ...
+        / ... (At bottom: 4^{log2 n} = n^{log2 4} = n^2 leaves)
+        
+Leaves: T(1) T(1) ... T(1) (n^2 leaves, each cost: 3)  
+
+[Leaves total cost: 3 n^2]
+        ...
+
+Grand Total: 
+
+Sum of layers = sum_{i=0}^{log2 n - 1} n * 2^i 
+              = n (2^{log2 n} - 1) 
+              = n (n - 1) 
+              = n^2 - n + Leaves 3 n^2 
+              = 4 n^2 - n 
+              = \Theta(n^2)
+              
+        \end{verbatim}
+
+
+
+        
+        \end{solution}
+
+        
+    \item Use the substitution method to verify your function found in part 1. 
+
+
+    
+        \begin{solution}
+                \vspace{\stretch{1}}
+            \vspace{0.5 cm}
+            
+        
+        For $n=1$, $T(1)=3$
+        
+        
+        % \textbf{Inductive step.} 
+        
+        Assume that for all smaller powers of two $m<n$, 
+        
+        we have $T(m)=O(m)$, i.e. $T(m)\le 4m^2 - m$. 
+        
+        Then, using the recurrence
+        
+        \[
+        \begin{aligned}
+        T(n) &= 4\,T\!\left(\tfrac{n}{2}\right) + n \\
+        &\le 4\,\Big(4\,(\tfrac{n}{2})^2 - \tfrac{n}{2}\Big) + n \qquad\text{(by the inductive hypothesis at $m=\tfrac{n}{2}$)}\\
+        &= 4\,\Big(\tfrac{4n^2}{4} - \tfrac{n}{2}\Big) + n \\
+        &= 4n^2 - 2n + n \\
+        &= 4n^2 - n.
+        \end{aligned}
+        \]
+        Thus the claim holds for $n$ as well
+        
+        By induction, $T(n)\le 4n^2 - n$ for all powers of two $n$, and hence $T(n)=O(n^2)$
+        
+        
+        \end{solution}
+
+
+        
+    \item solve $T(n) = T(n/3) + \log_3 n$  with $T(0) = T(1)=T(2) = 2$.
+
+        \begin{solution}
+        \vspace{0.5cm}
+        
+        \textbf{Recurrence-tree analysis.}
+        
+        Unroll the recurrence to build a recursion tree. At the root (level $0$) the cost is $        \log_3 n$
+        
+        At level $1$ we have a single subproblem of size $n/3$ with extra cost
+        
+        \[\log_3(n/3)=\log_3 n - 1\]
+        
+        In general, at level $i$ (for $0\le i<k$) there is exactly one node of size $n/3^i$ with cost
+        
+        \[\log_3\bigl(n/3^i\bigr)=\log_3 n - i\]
+        
+        The tree stops when the subproblem size becomes constant, i.e. when $n/3^k=1$, so
+        \[k=\log_3 n\]
+        
+        Compute the total cost contributed by the non-leaf levels (levels $0$ through $k-1$):
+        
+        \begin{align*}
+        \sum_{i=0}^{k-1}\bigl(\log_3 n - i\bigr)
+        &= k\,\log_3 n - \sum_{i=0}^{k-1} i \\
+        &= k\,\log_3 n - \frac{(k-1)k}{2}
+        \end{align*}
+        
+        Substitute $k=\log_3 n$ to obtain
+        \[
+        \bigl(\log_3 n\bigr)^2 - \frac{\bigl(\log_3 n -1\bigr)\log_3 n}{2}
+        = O\bigl((\log_3 n)^2\bigr)
+        \]
+        
+        The leaves consist of a single constant-size subproblem (since this recurrence spawns one branch each level), so the total leaf cost is a constant $O(1)$
+        
+        Therefore
+        \[
+        T(n)=O \bigl((\log_3 n)^2\bigr)=O \bigl((\log n)^2\bigr).
+        \]
+        % (We may drop the base of the logarithm in the big-Theta since logarithms differ by constant factors)
+        \end{solution}
+        
+
+
+        \item Use the substitution method to verify your function found in part 3
+        \begin{solution}
+        \vspace{0.5cm}
+        
+        We will prove by induction (on $m=\lfloor \log_3 n\rfloor$) that for all $n\ge 2$ the recurrence satisfies
+        \[
+        T(n) \le C\bigl(\log_3 n\bigr)^2 + D
+        \]
+        for suitable constants $C,D>0$. This implies $T(n)=O\bigl((\log n)^2\bigr)$
+        
+        \textbf{Base cases.} For $n\in\{0,1,2\}$ we have $T(n)=2$. Choose constants $C,D$ so that
+        \[2\le C(\log_3 2)^2 + D
+        \]
+        which is possible for any fixed $C$ by taking $D$ large enough (e.g. choose $C=1$ and $D=2$)
+        
+        \textbf{Inductive step.} Assume the inequality holds for all smaller arguments than $n$
+        
+        Using the recurrence and the inductive hypothesis on $n/3$ we get
+        \begin{align*}
+        T(n) &= T(n/3) + \log_3 n \\
+        &\le C\bigl(\log_3(n/3)\bigr)^2 + D + \log_3 n \\
+        &= C\bigl(\log_3 n - 1\bigr)^2 + D + \log_3 n \\
+        &= C\bigl((\log_3 n)^2 - 2\log_3 n + 1\bigr) + D + \log_3 n \\
+        &= C(\log_3 n)^2 + \bigl(1-2C\bigr)\log_3 n + (C+D)
+        \end{align*}
+        
+        To ensure the right-hand side is at most $C(\log_3 n)^2 + D$, it suffices to have
+        \[(1-2C)\log_3 n + (C+D) \le D,
+        \]
+        which reduces to
+        \[(1-2C)\log_3 n + C \le 0
+        \]
+        This inequality must hold for all $n\ge 3$ (so that $\log_3 n\ge 1$) 
+        
+        If we choose $C\ge 1$, then $1-2C\le -1$ and the left side is at most $-\log_3 n + C\le -1 + C$. Hence picking $C=2$ makes $1-2C=-3$ and for all $n\ge 3$ we have
+        \[(1-2C)\log_3 n + C \le -3\cdot 1 + 2 = -1 \le 0
+        \]
+        With $C=2$ the inequality holds for all $n\ge 3$. Then choose $D$ large enough to accommodate the base cases (e.g. $D=2$ works) 
+        
+        Thus
+        \[T(n)\le 2(\log_3 n)^2 + 2
+        \]
+        for all $n\ge 0$, and we conclude $T(n)=O\bigl((\log n)^2\bigr)$
+        
+        % \textbf{Remark.} A similar lower-bound induction shows $T(n)=\Omega\bigl((\log n)^2\bigr)$, so the Theta bound in part 3 is tight
+        
+        \end{solution}
+
+
+
+
+\end{enumerate}
+
+\subsection*{Problem 2-3 -- Fast Exponentiation (20 Points+Honors Problem)}
+
+Naively, in order to compute $2025^n$ given input $n$, we need to perform $n-1$ many multiplications. 
+
+\begin{enumerate}
+    \item (8 points) For this problem, assume the input $n$ if a power of 2. That is, assume $n=2^k$ for some positive integer $k$. Give an algorithm that computes $2025^n$ using only $O(k)$ many multiplications.
+
+
+    \begin{solution}
+    
+            \vspace{0.5cm}
+
+
+    Since $n=2^k$, use the method of repeated squaring:
+    
+    
+
+    1. Start with $x = 2025$
+    
+    2. For $i = 1$ to $k$, update $x \leftarrow x^2$
+    
+    3. After $k$ iterations, $x = 2025^{2^k} = 2025^n$
+    
+    
+    Each iteration requires only one multiplication, and since we perform $k$ iterations, the total number of multiplications is $\Theta(\log n) = \Theta(k)$
+    
+    QED
+    \end{solution}
+
+    
+    \item (12 points) Justify the correctness and runtime complexity of your algorithm.
+    
+    
+    \begin{solution}
+            \vspace{0.5cm}
+
+    To justify correctness by induction
+    
+    
+    \textbf{Base case ($k=1$):} 
+    
+    For $n=2^1=2$, this algorithm computes $2025^2$ by squaring once. This matches the expected result
+    
+    
+    \textbf{Inductive step:} 
+    
+    Assume that after $i$ iterations, the algorithm correctly computes $2025^{2^i}$ 
+    
+    In the $(i+1)$-th iteration, we square the current result, yielding
+    
+    \[
+    (2025^{2^i})^2 = 2025^{2^{i+1}}
+    \]
+    
+    which is the correct value
+    
+    Thus, by induction, after $k$ iterations, the algorithm correctly computes $2025^{2^k} = 2025^n$
+    
+    
+    % \textbf{Runtime complexity:} 
+
+            \vspace{0.5cm}
+
+    
+    Each iteration involves exactly 1 multiplication 
+    
+    Since there are $k$ iterations, the total number of multiplications is $k$
+    
+    Because $n=2^k$, we have $k = \log n$
+    
+    Therefore, the runtime is $O(k) = O(\log n)$
+    
+    
+    Compared to the naive approach, which requires $n-1$ multiplications, 
+    
+    this algorithm reduces the complexity from $O(n)$ to $O(\log n)$
+
+    
+    \end{solution}
+        
+    
+    
+
+    
+    \item (\textbf{Honors Problem}, 0 points, *) Extend your result to the general case. That is, given an input any natural number $n$, give an algorithm that computes $2025^n$ using only $O(\log_2n)$ multiplications.
+    \begin{solution}
+        \vspace{6cm}
+
+        
+    \end{solution}
+\end{enumerate}
+% \newpage
+
+\subsection*{Problem 2-4 -- Sorting Stability (20 Points)}
+
+
+Recall that a sorting algorithm is said to be \emph{stable} if it does not change the order of identical elements in the input array.
+
+(More formally, if $A$ is the input and $A'$ is the sorted output, then for any two elements $A[i] = A[j]$ in the input,
+if $i', j'$ are the new locations of elements $A[i]$ and $A[j]$ in the sorted output array,
+then $i < j$ if and only if $i' < j'$.)
+
+
+\begin{enumerate}[label=(\alph*)]
+\item (10 points) Show that Merge Sort is stable. (A convincing explanation is enough, there is no need for a formal proof.)
+
+
+\begin{solution} 
+        \vspace{\stretch{1}}
+        \vspace{0.5 cm}
+        
+Merge Sort is stable because of the way it merges two sorted subarrays:
+        \vspace{0.5 cm}
+
+During the merge step, we repeatedly compare the first elements of the two subarrays (say, $L$ and $R$)
+
+- If $L[i] < R[j]$, then $L[i]$ is copied to the output first
+
+- Elif $L[i] > R[j]$, then $R[j]$ is copied to the output first
+
+- Elif $L[i] = R[j]$, then by convention Merge Sort takes the element from the left subarray $L$ first
+
+This rule ensures that when two identical elements appear, 
+
+The one that was earlier in the original array (which ended up in the left subarray) will also appear earlier in the merged array
+
+Since this merging process is applied at every level of recursion, 
+
+The final output array always preserves the original relative order of equal elements
+
+Therefore, Merge Sort is a stable sorting algorithm
+        \vspace{0.5 cm}
+
+QED
+\end{solution}
+
+
+\item (10 points) Show that Quicksort (using the last element as the pivot) is \emph{not} stable, by giving an example of an input array $A$ containing two identical elements,
+such that running Quicksort on $A$ changes the order of these elements.
+%By giving an example input array $A$ and indices $i<j$ for which $A[i]=A[j]$ but $i'>j'$ in $A'$, show that quick sort is not stable.
+
+
+% \begin{solution} 
+%         \vspace{\stretch{1}}
+%         \vspace{7 cm}
+% \end{solution}
+
+
+\begin{solution}
+        \vspace{\stretch{1}}
+        \vspace{0.5 cm}
+        
+% \textbf{Claim.} 
+
+% Quicksort with the last element as pivot (standard in-place partition, e.g., Lomuto with ``$\le$ pivot'' in the inner test) is \emph{not} stable.
+
+% \medskip
+
+% \textbf{Counterexample input.} Consider an array of key–tag pairs where the key is used for sorting and the tag only tracks original order:
+
+Let 
+
+\[
+A = [(2,\,a),\ (1,\,x),\ (2,\,b),\ (1,\,y)].
+\]
+Here the two identical elements are $(2,\,a)$ and $(2,\,b)$, with $(2,\,a)$ appearing \emph{before} $(2,\,b)$ in the input.
+
+\medskip
+\textbf{Run Quicksort with last element as pivot} 
+
+
+The initial pivot is the last element $p=(1,\,y)$
+
+Use the standard Lomuto partitioning (index $i$ starts one before the subarray, 
+
+And for each $j$ we place $A[j]$ to the ``$\le p$'' region when $A[j]\le p$):
+
+\begin{enumerate}
+  \item Start: $A=[(2,a),(1,x),(2,b),(1,y)]$, pivot $p=(1,y)$
+  \item $j=0$: $(2,a)\le(1,y)$? No
+  \item $j=1$: $(1,x)\le(1,y)$? Yes $\Rightarrow$ increment $i$ and swap $A[i]$ with $A[j]$; this swaps positions $0$ and $1$:
+  \[
+  A\gets[(1,x),(2,a),(2,b),(1,y)]
+  \]
+  \item $j=2$: $(2,b)\le(1,y)$? No
+  \item After the loop, swap pivot $A[i+1]$ with $A[\text{end}]$; swap positions $1$ and $3$:
+  \[
+  A\gets[(1,x),(1,y),(2,b),(2,a)]
+  \]
+\end{enumerate}
+
+% \textbf{Observation.} 
+
+        \vspace{0.5 cm}
+
+As you can see, the two equal keys $(2,\,a)$ and $(2,\,b)$ have had their relative order \emph{reversed}:
+
+In the input we had $(2,\,a)$ before $(2,\,b)$, 
+
+but after the first partition step we get $(2,\,b)$ before $(2,\,a)$
+
+        \vspace{0.5 cm}
+
+Subsequent recursive calls cannot restore their original order because Quicksort never reorders equal keys stably once they have been separated by partitioning
+
+\end{solution}
+
+
+
+
+
+\end{enumerate}
+
+\section*{Problem 2-5 -- Weighted Median (20 Points)}
+
+Suppose we have $n$ distinct positive numbers $x_1, x_2, \ldots, x_n$ such that $\sum_i x_i = 1$. The goal of this question is to find the weighted median. We define the weighted median as the element $x_k$ such that:
+$$
+\sum_{x_i<x_k} x_i < \frac{1}{2} \qquad\text{and}\qquad \sum_{x_i>x_k} x_i \leq \frac{1}{2}. 
+$$
+That is, the weighted median lies somewhere in the array such that everything smaller sums to less than 1/2 and everything larger sum to at most 1/2. With divide and conquer, we can solve this problem in time $\Theta(n)$.
+\begin{enumerate}
+    \item (15 points) Use divide-and-conquer to create an algorithm that finds the weighted median of an input list $x_1, x_2, \ldots, x_n$ satisfying $\sum_{x_i} x_i=1$. 
+    (\textbf{Hint:} calculate the actual median first, which can be done in time $\Theta(n)$! Then, consider the total sum of elements less than the median and the total sum greater than the median. Try to use these to make some clever partitions for your divide step based on the actual median.)
+    \begin{solution}
+        \vspace{0.5cm}
+
+        
+        We use a divide-and-conquer approach:
+        
+        1. Use the linear-time selection algorithm (median-of-medians) to find the element $m$ of rank $\lfloor n/2 \rfloor$
+        
+        % This takes $\Theta(n)$
+                \vspace{0.5cm}
+
+        
+        2. Partition into sets $L=\{x_i < m\}$, $E=\{m\}$, and $R=\{x_i > m\}$, with sums $S_L, S_E, S_R$.
+        
+                \vspace{0.5cm}
+
+        3. Check condition:
+
+        
+           If $\text{left\_sum} + S_L < \frac{1}{2}$ and $\text{right\_sum} + S_R \leq \frac{1}{2}$:
+           
+           \quad \quad Then return $m$
+
+
+
+           Elif $\text{left\_sum} + S_L \geq \frac{1}{2}$:
+           
+           \quad \quad Then recurse on $L$ with:
+                    \begin{itemize}
+                        \item $\text{left\_sum}' = \text{left\_sum}$
+                        \item $\text{right\_sum}' = \text{right\_sum} + S_E + S_R$
+                    \end{itemize}
+
+
+           Elif $\text{right\_sum} + S_R > \frac{1}{2}$:
+           
+           \quad \quad Then recurse on $R$ with:
+                    \begin{itemize}
+                        \item $\text{left\_sum}' = \text{left\_sum} + S_L + S_E$
+                        \item $\text{right\_sum}' = \text{right\_sum}$
+                    \end{itemize}
+
+
+
+        \textbf{Pseudocode:}
+
+        \begin{verbatim}
+        
+        Def find_weighted_median(
+                arr, 
+                excluded_left_sum, excluded_right_sum
+            ):
+        
+        # Base
+        if arr has one element x:
+            if excluded_left_sum < 0.5 and excluded_right_sum <= 0.5:
+                return x
+        
+        Use linear-time selection to find median m
+        
+        L = {x in arr | x < m}, sum = S_L
+        E = {m}, sum = S_E = m
+        R = {x in arr | x > m}, sum = S_R
+        
+        Let total_left = excluded_left_sum + S_L   // all elements < m
+        
+        Let total_right = excluded_right_sum + S_R  // all elements > m
+        
+        If total_left < 0.5 and total_right <= 0.5:
+                return m
+        
+        Else if total_left >= 0.5:
+                #Weighted median must be in L
+                return find_weighted_median(
+                    L, 
+                    excluded_left_sum, excluded_right_sum + S_E + S_R
+                )
+        
+        Elif total_right > 0.5
+                #weighted median must be in R
+                return find_weighted_median(
+                    R, 
+                    excluded_left_sum + S_L + S_E, 
+                    excluded_right_sum
+                )
+        if __name__ == "main":
+            find_weighted_median(original_array, 0, 0)
+        \end{verbatim}
+
+
+
+
+                    
+           
+           % - Elif $S_L \ge 1/2$:
+           
+           % \quad \quad recurse on $L$
+           
+           % - Elif $S_L + S_E < 1/2$:
+           
+           % \quad \quad recurse on $R$
+    
+        
+    \end{solution}
+    
+    \item (5 points) Justify the runtime of your algorithm. You only need to argue the upper bound (that is, the algorithm runs in $O(n)$). 
+
+
+    \begin{solution}
+    
+        \vspace{0.5cm}
+    
+    At each recursive level, performing the following steps:
+    
+    1. Compute the median of the current subarray in $ O(k) $ time, where $ k $ is the size of the subarray
+    
+    2. Partition the array into $ L $, $ E $, and $ R $, which takes $ O(k) $ time
+    
+    3. Compute sums $ S_L $ and $ S_R $, also in $ O(k) $ time
+    
+    Thus, each level performs $ O(k) $ work
+    
+    Crucially, because we recurse on \emph{at most half} of the current array (since we use the actual median, 
+    
+    which guarantees $ |L| \leq \lfloor n/2 \rfloor $ and $ |R| \leq \lfloor n/2 \rfloor $), the recurrence for the runtime is:
+    \[
+    T(n) = T(n/2) + O(n)
+    \]
+    By expanding the recurrence:
+    \[
+    T(n) = O(n) + O(n/2) + O(n/4) + \cdots = O(n)
+    \]
+    
+    Since it is a geometric series summing to less than $ 2n $
+    
+    Therefore, the total runtime is $ O(n) $
+    
+    \end{solution}
+
+\end{enumerate}
+
+\section*{Honors Problem -- Quicksort with Duplicates (0 Points)}
+
+\begin{enumerate}
+    \item (\textbf{*}): In class, we considered for simplicity Quicksort as running on arrays in which every element is unique. However, in reality, this will not always be the case. Consider the case where any element appears in the array at most $n/2$ times. Show that even if we partition around the median, the Quicksort recursion tree might be of depth $\Omega(n)$. 
+
+    % Consider the scenario where some element appears $n/2$ times in the array. Show that, even in this case, choosing the median element of the array as the partition may result in the pivot being very far from the middle of the array. \emph{(\textbf{Hint:} Try some small toy examples.)}
+    \begin{solution}
+        \vspace{\stretch{1}}
+        \vspace{6 cm}
+    \end{solution}
+
+    \item (\textbf{**}): Modify the partition subroutine in Quicksort to eliminate this problem, so that even if the array $A$ has duplicate elements, if we choose the median of $A$ as the pivot at each step, the depth of the Quicksort recursion tree will be $O(\log n)$.
+
+    \begin{solution}
+        \vspace{\stretch{1}}
+        \vspace{8 cm}
+    \end{solution}
+
+    
+\end{enumerate}
