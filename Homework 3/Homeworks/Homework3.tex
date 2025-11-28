@@ -1,0 +1,465 @@
+\lhead{\textbf{Basic Algorithms, Fall 2025 \\ CSCI-UA.0310-001}}
+\chead{\Large{\textbf{Homework 3}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ENTER NAME BELOW!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\rhead{\textbf{Professor Regev}\\\textbf{Name: } ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}
+%REPLACE THE TILDES WITH YOUR NAME
+\runningheadrule
+\firstpageheadrule
+\cfoot{}
+
+\section*{Due September 29 (11:59 p.m.)}
+\intro
+
+\subsection*{1-0 List all your collaborators and sources: (\texorpdfstring{$-\infty$}{-∞} points if left blank)}
+
+\vspace{0.75cm}
+
+
+% \vspace{0.75cm}
+
+\subsection*{Problem 3-1 -- Super Inversions (10 Points)}
+
+Recall that an inversion of an $n$-long array $A$ is a pair of indices $(i, j)$ such that $1\leq i<j\leq n$ but $A[i]>A[j]$. In the first homework, you were tasked with creating an algorithm that could find the number of inversions in a given array in $\Theta(n\log n)$ time.
+
+Consider now the task of finding \emph{super inversions}. We define a super inversion as a pair of indices $(i, j)$ such that $1\leq i<j\leq n$ but $A[i] > 2A[j]$. Give a $\Theta(n\log n)$ algorithm that finds the number of super inversions in a given array $A$. Briefly justify its runtime. 
+
+\begin{solution}
+    \vspace{0.5cm}
+
+    % \quad 
+    
+    Modify merge sort to count, at each merge step, 
+    
+    The number of cross pairs \((i,j)\) with \(i\) in the left half and \(j\) in the right half such that \(A[i] > 2A[j]\)
+    
+    Because each half is kept in nondecreasing order, 
+    
+    we can count these cross pairs in linear time using a two-pointer scan
+    
+    \medskip
+    % \noindent\textbf{Algorithm (Sort \& Count).}
+    \begin{enumerate}
+      \item If the subarray has at most one element, return \((0,\;\text{that element as a sorted array})\)
+      
+      \item Recursively process the left half \(L\) and the right half \(R\), obtaining counts \(c_L, c_R\) and their sorted versions (still denoted \(L, R\))
+      
+      \item \emph{Count cross super inversions from \(L\) into \(R\):}
+      
+      \begin{enumerate}
+      
+        \item Set pointer \(j \leftarrow 1\) and accumulator \(c \leftarrow 0\)
+        
+        \item For \(i = 1,2,\dots, |L|\): while \(j \le |R|\) and \(L[i] > 2\,R[j]\), 
+        
+        \quad  \quad advance \(j \leftarrow j+1\)
+        
+        Then add \(c \leftarrow c + (j-1)\)
+        
+      \end{enumerate}
+      
+      (Because \(R\) is sorted, for each fixed \(i\) the valid indices in \(R\) form a prefix \(\{1,\dots,j-1\}\); 
+      
+      pointer \(j\) never moves backward)
+      
+      \item Merge \(L\) and \(R\) into a single sorted array \(S\) in linear time
+
+      
+      \item Return the total count and the merged array: \(\big(c_L + c_R + c,\; S\big)\)
+
+      
+    \end{enumerate}
+    
+    % \noindent\textbf{Correctness.}\quad Every super inversion lies entirely in the left half, in the right half, or crosses the midpoint. The recursive calls count the first two kinds. For crossing pairs, since \(L\) and \(R\) are sorted, for each \(i\) the set \(\{ j : L[i] > 2R[j] \}\) is exactly a prefix of \(R\); the two-pointer sweep counts precisely those pairs, and each is counted once.
+    
+    % \noindent\textbf{Running time.}\quad Let \(T(n)\) be the time on size \(n\). Each level performs one linear-time cross-count and one linear-time merge, so
+    % \[
+    % T(n) = 2T(n/2) + O(n),
+    % \]
+    % which solves by the Master Theorem to \(T(n) = \Theta(n\log n)\).
+    
+    % \noindent\textbf{Remark.}\quad If the input integers can be large, compute \(2\,R[j]\) in a wider integer type to avoid overflow; this does not affect the asymptotic complexity.
+    
+
+
+\end{solution}
+
+\subsection*{Problem 3-2 -- Median of Medians (35 Points)}
+
+In the linear time ``median-of-medians'' selection algorithm, we grouped elements into groups of $5$ and used the $n/5$ medians of these groups.
+We showed that the median of the $n/5$ medians has at least $(3/10)n$ elements that are no greater than it, and at least $(3/10)n$ elements that are no smaller than it.
+
+We now ask what would happen if we used groups of 3 or 7 elements instead of 5.
+
+\begin{enumerate}
+   \item (10 points)
+    For a group size of 3,
+    compute the constant $\alpha \in [0,1]$
+    that replaces the constant of $3/10$ that we had for groups of 5.
+    In other words, for what value of $\alpha$
+    is the median of the medians
+    guaranteed to have at least $\alpha n$
+    elements 
+    that are no greater than it, and at least $\alpha n$ elements that are no smaller than it?
+    Explain your answer.
+\begin{solution}
+    \vspace{\stretch{1}}
+        \vspace{0.5 cm}
+
+    Split the input into $\lfloor n/3\rfloor$ groups of three
+    
+    Take the median of each triple, and let $m$ be the median of these $\lfloor n/3\rfloor$ medians
+    
+    
+    At least half of the medians are $\ge m$, i.e., at least
+    \[ \left\lceil \frac{\lfloor n/3\rfloor}{2} \right\rceil \ge \left\lceil \frac{n}{6} \right\rceil \]
+    
+    triples have their group-median $\ge m$
+    
+    In any such triple, at least two elements (the group median and the maximum) are $\ge m$
+    
+    Hence the total number of elements $\ge m$ is at least
+    
+    \[ 2\left\lceil \frac{n}{6} \right\rceil \ge \frac{n}{3} - 1 \]
+    
+    Similarly, at least $n/3 - 1$ elements are $\le m$
+    
+    
+    Therefore,  $\alpha = \tfrac{1}{3}$
+    
+        
+\end{solution}
+
+\item (5 points) Again find the constant $\alpha$, now for group size of 7. Explain your answer.
+\begin{solution}
+    \vspace{\stretch{1}}
+        \vspace{0.5 cm}
+
+
+        Partition the input into $\lfloor n/7\rfloor$ groups of 7
+
+        
+        Take the 4th order  of each group, 
+        
+        And let $m$ be the median of these $\lfloor n/7\rfloor$ medians
+        
+        
+        At least half of the group medians are $\ge m$, i.e., at least
+
+        
+        \[ \left\lceil \frac{\lfloor n/7\rfloor}{2} \right\rceil \ge \left\lceil \frac{n}{14} \right\rceil \]
+
+        
+        groups have their group-median $\ge m$
+        
+        In any such group of seven, at least four elements are $\ge m$
+        
+        Therefore the total number of elements $\ge m$ is at least $ \frac{2}{7}n $
+        
+        Very simiklarly, at least $\tfrac{2}{7}n$ elements are $\le m$
+        
+        
+        Hence $\alpha = \tfrac{2}{7}$
+        
+        % \[ {\alpha = \tfrac{2}{7}} \]
+
+
+\end{solution}
+
+\item (10 points)
+    Compute the running time of the median-of-medians selection algorithm if we replace the group size by 3.
+    Write the recurrence for the running time and use the Recursion Tree method to solve it.
+    \begin{solution}
+    \vspace{\stretch{1}}
+        \vspace{0.5 cm}
+
+
+
+        By Part (a), the larger side after partition has size at most $\tfrac{2}{3}n$
+        
+        The cost to form groups, compute group medians, and partition around $m$ is linear
+        
+        Hence
+        
+        \[
+        T(n) \;\le\; T(n/3) \;+
+        T(2n/3) \;+\; O(n)
+        \]
+        
+        
+        \textbf{Recursion tree}
+        
+        
+        Each node of size $x$ spawns two children of sizes $x/3$ and $2x/3$
+        
+        The sum of sizes at level $k$ is $n\,(\tfrac{1}{3}+\tfrac{2}{3})^k = n$
+        
+        Therefore the nonrecursive work per level is $\Theta(n)$, 
+        
+        And the height is $\Theta(\log n)$
+        
+        Hence
+        
+        \[
+        T(n) = \Theta(n\log n)
+        \]
+
+\end{solution}
+
+    \item (10 points)
+    Now compute the running time of the median-of-medians selection algorithm if we replace the group size by 7.
+    Write the recurrence for the running time and use the Recursion Tree method to solve it.
+    \begin{solution}
+    \vspace{\stretch{1}}
+        \vspace{0.5 cm}
+
+        $\alpha=2/7$, so the larger side after partition has size at most $\tfrac{5}{7}n$
+        
+        The grouping, group-median computation, and partitioning cost is linear
+
+        
+        Thus
+        \[
+        T(n) \;\le\; T(n/7) \;+
+        T(5n/7) \;+\; O( n)
+        \]
+        
+        
+        
+        Each node of size $x$ splits into children of sizes $x/7$ and $5x/7$
+        
+        The total size at level $k$ is at most $n\,(\tfrac{1}{7}+\tfrac{5}{7})^k = n\,(\tfrac{6}{7})^k$
+        
+        Summing the linear work across all levels gives a convergent geometric series:
+        
+        \[
+        \sum c n\left(\tfrac{6}{7}\right)^k = \Theta(n).
+        \]
+        
+        Therefore
+        
+        \[
+        T(n) = \Theta(n)
+        \]
+
+        
+\end{solution}
+
+\end{enumerate}
+
+\subsection*{Problem 3-3 -- Mushroom Majority (25 Points)}
+
+You are an assistant at a fancy restaurant.  A farmer has come to you with a large basket of $n$ truffles (a fancy type of mushroom).  The truffles are of an unknown number of different varieties.  The head chef wants to make a sauce with at least $n/2+1$ truffles of \emph{the same variety} and will only buy the basket if he can make a suitable sauce.  You cannot tell the difference between the varieties, but thankfully the farmer has brought along his truffle-sniffing pig. You can give the pig any two mushrooms, and it will oink if and only if two truffles held to its snout are of the same variety.  
+
+\begin{enumerate}
+\item (10 points) Show how to decide whether to buy the basket with $O(n\log n)$ queries to the pig.
+
+% (20 points) Recall the closest pair algorithm. In class you have seen the algorithm to find the closest pair of points in a plane. Consider the 3-dimensional version of this problem: given $n$ points in $\mathbb{Z}^3$ we want to find the closest pair of points. Try to use the ideas seen in class to develop an algorithm to solve this problem as efficiently as possible. You will get full points for an algorithm that runs in time $O(n\log^2 n)$, but note that even faster algorithms exist (as quick as $O(n\log n)$).
+
+\begin{solution}
+    \vspace{0.7cm}
+
+    
+    
+
+    The pig can only tell whether the two truffles are same or not, i.e. 
+
+    We can query an oracle \textsc{Same}(a,b) that returns true 
+    
+    \hspace{1cm} iff truffles $a$ and $b$ are of the same variety
+
+        \vspace{0.7cm}
+
+    
+    The solution to decide whether there is more than $n/2$ is:
+    
+    \begin{enumerate}
+      \item Recursively compute candidates $x$ for the left half $L$ and $y$ for the right half $R$ (each may be \textsc{NONE})
+      
+      \item Combine: do one linear pass over $A=L\cup R$. For each $t\in A$, first compare $t$ with $x$; if \textsc{Same}$(t,x)$ then $\mathrm{cnt}_x{++}$; otherwise compare $t$ with $y$; if \textsc{Same}$(t,y)$ then $\mathrm{cnt}_y{++}$
+      
+      \item If $\mathrm{cnt}_x> \lfloor n/2\rfloor$ return $x$; 
+      
+      else if $\mathrm{cnt}_y> \lfloor n/2\rfloor$ return $y$; else return \textsc{NONE}
+      
+    \end{enumerate}
+    % \emph{Correctness.} If a true majority $m$ exists in $A$, then $m$ is a majority in at least one of $L$ or $R$ (pigeonhole principle), hence appears among $\{x,y\}$. The combine pass verifies whether any candidate exceeds $n/2$ globally.
+    
+    % \emph{Complexity.} 
+    
+    
+
+
+    
+\end{solution}
+
+% \newpage
+
+\item (10 points) Justify your runtime. 
+
+\begin{solution}
+    \vspace{0.7cm}
+
+    Def $T(n)$ be the number of oracle queries
+    
+    The combine step does $O(n)$ queries, and the recursion splits into two halves, so
+    
+    \[
+    T(n)=T(n/2)+T(n/2)+O(n)
+    \]
+
+    This recursion is obviously $T(n) = O(n \log n)$
+    
+    
+\end{solution}
+
+
+\item (5 points) Modify your solution to also collect the $n/2+1$ mushrooms of the same variety (if this grouping exists). 
+
+\begin{solution}
+    \vspace{0.5cm}
+    
+    Reuse the divide-and-conquer procedure from parts (a)(b) to obtain up to two candidates \(x\) (from the left half) and \(y\) (from the right half)
+    
+    During the verification pass, keep not only the counts but also the actual indices/items that match each candidate
+    
+    
+    As soon as one list exceeds \(\lfloor n/2 \rfloor\), return its first \(\lfloor n/2\rfloor+1\) elements
+    
+    \medskip
+    \textbf{Algorithm:}
+    \begin{enumerate}
+      \item Recursively compute candidates \(x\in L\cup\{\textsc{NONE}\}\) and \(y\in R\cup\{\textsc{NONE}\}\)
+      
+      \item  Initialize lists \(S_x\leftarrow [\,]\) and \(S_y\leftarrow [\,]\)
+      
+      \hspace{1cm} Scan all truffles using the pig \(t\in A=L\cup R\):
+      
+      \begin{enumerate}
+        \item If \(x\neq \textsc{NONE}\) and \textsc{Same}(t, x):
+        
+        \hspace{1cm} append \(t\) to \(S_x\)
+        
+        If \(|S_x|=\lfloor n/2\rfloor+1\):
+        
+        \hspace{1cm} return \(S_x\)
+        
+        \item Else, if \(y\neq \textsc{NONE}\) and \textsc{Same}(t, y):
+        
+        \hspace{1cm} append \(t\) to \(S_y\)
+        
+        If \(|S_y|=\lfloor n/2\rfloor+1\):
+        
+        \hspace{1cm} return \(S_y\)
+      \end{enumerate}
+      
+      \item If neither list reaches size \(\lfloor n/2\rfloor+1\) by the end of the scan, output \textsc{NONE}
+    \end{enumerate}
+    
+    
+    
+
+
+    
+\end{solution}
+% \newpage
+
+\item (honors problem, 0 points, **) Provide an algorithm that decides on the basket in only $O(n)$ pig queries. (hint: If you discard pairs of truffles from different varieties, what will happen if there is indeed a majority variety?) 
+
+\begin{solution}
+    \vspace{0.5cm}
+
+    
+\end{solution}
+
+\end{enumerate}
+
+\subsection*{Problem 3-4 -- Repeat Elements (30 Points)}
+
+Consider an array $A$ with $n$ elements where it is guaranteed that every element appears exactly twice in $A$, e.g., $A=(9,7,7,1,9,1,3,5,3,5)$. For any two elements $A[i], A[j]$ in the array, we may only compare the elements by testing equality, i.e., $A[i] \overset{?}{=} A[j]$. With this in mind, 
+\begin{enumerate}
+    \item (15 points) Give an algorithm that returns two positions in $A$ that have the same element using at most $n-2$ comparisons/equality tests.
+    
+    \medskip\noindent\emph{Note:} These may be any two positions, so for example $(1,5), (2,3), (4,6),(7,9)$ or $(8, 10)$ are all valid outputs of this algorithm on $A$.
+
+    \begin{solution}
+        \vspace{.7cm}
+
+    \medskip
+    \noindent \textbf{Algorithm:}
+    \begin{enumerate}
+    \item For $i = 2$ to $n-1$ (i.e., through the second to second-to-last elements):
+    \begin{itemize}
+    \item Compare $A[1]$ with $A[i]$ (test if $A[1] = A[i]$).
+    \item If they are equal, return the pair $(1, i)$ and terminate.
+    \end{itemize}
+    \item If no match is found after $n-2$ comparisons, return the pair $(1, n)$ without performing any additional comparison.
+    \end{enumerate}
+    
+    
+        
+    \end{solution}
+
+    \item  (15 points) Prove that your algorithm really needs $n-2$ comparisons in the worst case (i.e., there are inputs where it uses that many comparisons before terminating). Specifically, give an example of a worst-case input for $n=10$.
+
+    \begin{solution}
+        \vspace{0.5cm}
+
+
+        
+        Let $A$ be an array of length $n$ in which
+        
+        \[
+        A[1]=x,\quad A[n]=x,\quad \text{and } A[2],\ldots,A[n-1] \text{ consist of } \tfrac{n-2}{2} \text{ disjoint pairs of distinct values,}
+        \]
+    
+        so that none of $A[2],\ldots,A[n-1]$ equals $x$
+
+        
+        Then every element appears exactly twice, as required
+        
+        The algorithm compares $A[1]$ with $A[i]$ for $i=2,3,\ldots,n-1$ and finds $A[1]\neq A[i]$ each time, because no position $2\le i\le n-1$ holds the value $x$
+        
+        Hence it performs precisely $n-2$ failed comparisons before exiting and outputting $(1,n)$ without any further test
+        
+        Under the equality only model, as long as no comparison has yet matched $A[1]$, there remains a completion of the instance (consistent with the promise "every value appears exactly twice") in which $A[1]$ matches only at a position that has not yet been compared
+        
+        
+        In particular, after any strict subset of the comparisons $\{(1,2),\ldots,(1,n-1)\}$ has been performed and all returned "not equal", 
+        
+        there is still an instance consistent with these answers where the unique mate of $A[1]$ sits at an untested index among $\{2,\ldots,n-1\}$, 
+        
+        while all other positions form disjoint pairs among themselves
+        
+        Therefore, no algorithm that only tests equalities against $A[1]$ can certify a match earlier in this adversarial sequence, 
+        
+        And the constructed array forces $n-2$ comparisons for the given algorithm
+        
+        \medskip\noindent{For example when $n=10$.} One valid worst case input is
+        
+        \[
+        A=[9,7,7,1,1,3,3,5,5,9]
+        \]
+        
+        for which the algorithm makes 8 comparisons
+        
+        
+    \end{solution}
+\end{enumerate}
+
+
+\subsection*{Honors Problem -- Lower Bounds (0 Points)}
+In Question 3-4, we asked you to give an algorithm to find two positions with the same element.
+\begin{itemize}
+    \item (****) We conjecture that any correct comparison-based deterministic algorithm must use \emph{at least} $n-2$ comparisons. Is the conjecture true? Can you prove it?
+
+    \begin{solution}
+        \vspace{7cm}
+    \end{solution}
+    \newpage
+    \item  (**) However, it is possible to construct a \emph{randomized} algorithm which in expectation uses fewer comparisons. Suggest a randomized algorithm and state (try to justify) how many comparisons it requires in expectation. (Hint: suppose you just pick a few positions of the array at random. How many do you need to pick before there is a good chance that some element occurs at two of those positions?)
+    \begin{solution}
+        \vspace{6cm}
+    \end{solution}
+\end{itemize} 
