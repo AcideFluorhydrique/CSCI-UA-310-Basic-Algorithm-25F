@@ -1,0 +1,467 @@
+\lhead{\textbf{Basic Algorithms, Fall 2025 \\ CSCI-UA.0310-001}}
+\chead{\Large{\textbf{Homework 4}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ENTER NAME BELOW!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\rhead{\textbf{Professor Regev}\\\textbf{Name:} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}
+%REPLACE THE TILDES WITH YOUR NAME
+\runningheadrule
+\firstpageheadrule
+\cfoot{}
+
+\section*{Due October 6 (11:59 p.m.)}
+\intro
+
+\subsection*{1-0 List all your collaborators and sources: (\texorpdfstring{$-\infty$}{-∞} points if left blank)}
+\vspace{0.75cm}
+
+
+
+\section*{Problem 4-1 -- Permutations (40 Points)}
+
+Let $[n] := \{1, 2, \ldots, n\}$, and let $S_n$ be the set of all permutations of $[n]$. For example, for $n=3$, we have $|S_3|=6$ with:
+$$S_3 = \{(1,2,3), (1,3,2), (2, 1,3), (2, 3, 1), (3, 1, 2), (3, 2, 1)\}$$
+%Recall that $|S_n|=n!=n\cdot (n-1) \cdots 1$. %Recall that $n!=O(n^n)$ and $2^n=O(n!)$. 
+Note that each permutation in $S_n$ can be seen as an input for a sorting algorithm (where the elements of $[n]$ are reordered according to the permutation). In this question, we will consider sorting algorithms that for some inputs err and do not return the correct answer. We say that a sorting algorithm is $\eps$-correct if the algorithm produces the correct result (i.e., produces a sorted array as output) on at least $\eps\cdot |S_n|$ inputs in the set $S_n$. 
+
+\begin{enumerate}
+    \item (25 points) Argue that for any $0 \leq \epsilon \leq 1$, the decision tree of an $\epsilon$-correct comparison-based sorting algorithm must have at least $\epsilon \cdot |S_n|$ leaves. \hint{Recall that the output of a comparison-based sorting algorithm is a permutation that prescribes how the input array has to be ordered to obtain the sorted output.}
+    \begin{solution}
+        \vspace{\stretch{1}}
+        \vspace{0.5 cm}
+
+
+        Let $S_n$ be the set of all permutations of $[n]$, 
+        
+        we have 
+        \[|S_n| = n!\]
+        
+
+        \vspace{0.5 cm}
+        
+        Let $L$ be the number of leaves in its decision tree
+        
+        For each leaf $\ell$, the algorithm outputs a fixed permutation $\sigma_\ell$
+        
+        The algorithm is correct on an input permutation $p$ only if the output $\sigma_\ell$ equals $p^{-1}$, where $\ell$ is the leaf reached by $p$
+        
+        Since $\sigma_\ell$ is fixed, there is at most one $p$ per leaf for which the algorithm is correct
+        
+        Therefore, the number of input permutations on which the algorithm is correct is at most $L$
+        
+        Since the algorithm is $\epsilon$-correct, it must be correct on at least $\epsilon \cdot n!$ inputs
+        
+        Thus, \[L \geq \epsilon \cdot n!\]
+
+        QED
+        
+    \end{solution}
+\end{enumerate}
+
+\noindent
+In the following, we investigate whether allowing for more errors can save on the required number of comparisons.   
+For example, at the extreme case that $\varepsilon =0$, no comparison has to be made (the algorithm is allowed to always err).
+In what follows, for each given value of $\varepsilon$, decide whether there exists a comparison-based sorting algorithm that is $\varepsilon$-correct and runs in time $O(n)$.  Justify your answers. (Recall that $|S_n| = n! = n(n-1)\cdots2\cdot 1$.)
+\begin{enumerate}[resume]
+    \item (5 points) $\eps=1/2$. 
+    
+    \begin{solution}
+        \vspace{\stretch{1}}
+        \vspace{0.5 cm}
+
+        For a comparison-based sorting algorithm to be $\epsilon$-correct with $\epsilon = 1/2$, the decision tree must have at least $\frac{1}{2} n!$ leaves
+        
+        However, if the algorithm runs in $O(n)$ time, 
+        
+        \hspace{1 cm} the height of the decision tree is $O(n)$
+        
+        \hspace{1 cm} so the maximum number of leaves is $2^{O(n)}$
+        
+        For large $n$, $2^{cn} < \frac{1}{2} n!$, which is impossible
+        
+        Hence, no such algorithm exist
+
+        
+    \end{solution}
+
+    \item (5 points) $\eps=1/n$. 
+    \begin{solution}
+        \vspace{\stretch{1}}
+        \vspace{0.5 cm}
+
+
+        For a comparison-based sorting algorithm to be $\epsilon$-correct with $\epsilon = 1/n$, the decision tree must have at least \[(1/n) \cdot n! = (n-1)!\] leaves
+
+        \vspace{0.5 cm}
+
+        
+        If the algorithm runs in $O(n)$ time, 
+        
+        \hspace{1 cm}the height of the decision tree is $O(n)$
+        
+        \hspace{1 cm}so the maximum number of leaves is $2^{O(n)}$
+        
+        For large $n$, $2^{O(n)} < (n-1)!$, which contradicts the requirement
+        
+        Therefore, no such algorithm exists
+
+        
+    \end{solution}
+    
+    \item (5 points) $\eps=\frac{1}{2^n}$. 
+    \begin{solution}
+        \vspace{\stretch{1}}
+        
+        \vspace{0.5 cm}
+
+        For a comparison-based sorting algorithm to be $\epsilon$-correct with $\epsilon = 1/2^n$, the decision tree must have at least $(1/2^n) \cdot n!$ leaves
+        
+        If the algorithm runs in $O(n)$ time, 
+        
+        \hspace{1 cm}the height of the decision tree is $O(n)$
+        
+        \hspace{1 cm}so the maximum number of leaves is $2^{O(n)}$
+        
+        For very large $n$, we know exponential is much smaller than factorial:
+
+        \[ k^n << n!\]
+
+        Thus,
+        
+
+        \[2^{cn+b+1}< n!\]
+
+        i.e.
+
+        \[2^{\mathcal{O}(n) } < \frac{n!}{2^n}\]
+
+     
+        contradiction!
+        
+        Hence, no such algorithm exists
+        
+    \end{solution}
+
+    % \newpage 
+    
+    \item (\textbf{Honors Problem}, **, 0 points)  $ \eps=\frac{2^{\left\lfloor \frac{n}{2}\right\rfloor }}{n!}$.
+    \begin{solution}
+        \vspace{\stretch{1}}
+        \vspace{0.5 cm}
+
+        For a comparison-based sorting algorithm to be $\epsilon$-correct with $\epsilon = \frac{2^{\lfloor n/2 \rfloor}}{n!}$
+        
+        the decision tree must have at least $2^{\lfloor n/2 \rfloor}$ leaves
+        
+        Since the algorithm runs in $\mathcal{O}(n)$ time, the decision tree has height $O(n)$, and thus the number of leaves is at most $2^{O(n)}$
+        
+        For large $n$, $2^{O(n)} > 2^{\lfloor n/2 \rfloor}$, so it is possible for the decision tree to have enough leaves to cover the required number of correct inputs
+        
+        Therefore, such an algorithm exists
+
+        
+    \end{solution}
+    
+\end{enumerate}
+
+\section*{Problem 4-2 -- Sorting Bounds (30 points)}
+
+\begin{enumerate}
+    \item (5 points) Assume you are given an array of $n$ integers in the range
+    $\{1,\ldots, (\log n)^{\log n}\}$. Show how to sort this array in time
+    $O(n \log\!\log n)$.
+
+    \begin{solution}
+        \vspace{\stretch{1}}
+        \vspace{0.5 cm}
+
+        By lecture 8:
+
+        If the keys are in range $(0, k^d-1)$,
+
+        % By using $\mathcal{ RADIXSORT}$
+
+        By using RADIXSORT, the runtime complexity would be 
+
+        \[\Theta(d\cdot (n+k))\]
+
+        Here, 
+
+        \[(\log n)^{\log n} = n^{\log_n (\log n)^{\log n}} = n^{\log \log n}\]
+
+        Hence, sorting this array would be 
+
+        \[\Theta(\log \log n \cdot (n+n)) = \Theta(n \log \log n) \] 
+
+
+        
+
+
+        
+    \end{solution}
+
+
+    \item (10 points) Assume you are given an array of $n$ integers with many
+    duplicates, so that you know that there are at most $\frac{n}{\log n}$
+    distinct elements in the array. Show how to sort this array in time
+    $O(n)$. You may assume access to an empty array of size $B$ where $B$ is an upper bound on the integers in your input as well as any additional memory you may require.
+    
+    \noindent(\textbf{Hint:} Adapt counting (small-key) sort by keeping track of which elements exist in the array and how many from each one.)
+
+    \begin{solution}
+        \vspace{\stretch{1}}
+        \vspace{0.6 cm}
+
+    Since there are at most $\frac{n}{\log n}$ distinct elements in the array, we can sort it in $O(n)$ time as follows:
+
+    \begin{enumerate}
+        \item Traverse the input array and use a hash map to count the frequency of each distinct element
+        
+        This takes $\mathcal{O}(n)$ time
+        
+        \item Extract all distinct keys from the hash map into a list 
+        
+        The size of this list is at most $\frac{n}{\log n}$
+        
+        \item Sort this list of distinct elements using any comparison-based sorting algorithm
+        
+        The time complexity is
+        \[
+            \mathcal{O}\left( \frac{n}{\log n} \cdot \log\left( \frac{n}{\log n} \right) \right)
+            = \mathcal{O}\left( \frac{n}{\log n} \cdot (\log n - \log \log n) \right)
+            = \mathcal{O}(n)
+        \]
+        
+        \item Finally, iterate through the sorted list of distinct elements, and for each element, output it as many times as its frequency into the output array. This step also takes $\mathcal{O}(n)$ time
+        
+    \end{enumerate}
+    
+    Thus, the total running time is $$\mathcal{O}(n)$$
+
+        
+    \end{solution}
+
+    \item (10 points) From class, we saw that comparison-based sorting algorithms must make $\Omega(n\log n)$ comparisons, and comparison-based median finding algorithms must take $\Omega(n)$ comparisons. For this question, we want to show that sorting takes at least as many explicit (i.e., not asymptotic) comparisons as median finding. 
+
+    To do so, we must introduce the notion of a reduction. Suppose that solving some problem \textsf{probA} always requires at least $A$ comparisons in the worst case. Also suppose there is an algorithm for solving \textsf{probA} that works by solving a problem \textsf{probB} and then making no other comparisons before outputting. Prove that this implies that solving \textsf{probB} also takes at least $A$ comparisons. (\textbf{Hint:} Think about what happens if this weren't true.)
+     \begin{solution} 
+        \vspace{\stretch{1}}
+        \vspace{0.6 cm}
+
+    
+    Suppose that solving problem \textsf{probA} requires at least $A$ comparisons in the worst case
+    
+    Assume there exists an algorithm $\mathcal{A}$ that solves \textsf{probA} by first solving \textsf{probB} and then producing the output without performing any additional comparisons
+
+    Now, suppose for contradiction that \textsf{probB} can be solved using fewer than $A$ comparisons in the worst case
+    
+    Then, algorithm $\mathcal{A}$ would also use fewer than $A$ comparisons (since it only uses the comparisons made while solving \textsf{probB} and no others)
+    
+    This contradicts the assumption that any algorithm for \textsf{probA} must make at least $A$ comparisons in the worst case
+
+    Therefore, our supposition is false, and solving \textsf{probB} must require at least $A$ comparisons in the worst case
+    
+    \end{solution} 
+
+    \item (5 points) Using the above, prove that any comparison-based sorting algorithm must make at least as many comparisons as it takes to find the median of an array using a comparison-based algorithm. 
+    \begin{solution}
+        \vspace{0.5cm}
+
+    Consider the problem of finding the median of an array
+    
+    We can solve this problem by first sorting the array using any comparison-based sorting algorithm and then simply returning the middle element (e.g., the $\lfloor n/2 \rfloor$-th element in the sorted order)
+    
+    This procedure makes no comparisons beyond those performed by the sorting algorithm itself
+
+    Thus, we have reduced the median-finding problem (\textsf{probA}) to the sorting problem (\textsf{probB}) without any additional comparisons
+    
+    By the result from the previous part, this implies that the number of comparisons required to sort must be at least as large as the number required to find the median 
+    
+    In other words, any comparison-based sorting algorithm must make at least as many comparisons as any comparison-based median-finding algorithm
+        
+    \end{solution}
+   
+\end{enumerate}
+
+% \newpage
+
+\section*{Problem 4-4 -- 3-Way Karatsuba (30 Points)}
+
+In this question, we will consider the problem of making 3-way Karatsuba multiplication. In essence, we will divide our numbers $X$ and $Y$ into three parts rather than 2, as so:
+
+$$X = A\cdot10^{2n/3}+B\cdot10^{n/3}+C$$
+
+$$Y=D\cdot 10^{2n/3}+E\cdot 10^{n/3}+F.$$
+\begin{enumerate}
+    \item (10 points) Describe the naive approach using 9 small-part multiplications to find the product $X\cdot Y$ using the split as above. 
+
+    \begin{solution}
+        \vspace{0.5cm}
+
+        By writing
+        
+        \[X=A\,10^{2n/3}+B\,10^{n/3}+C\]
+        
+        \[ Y=D\,10^{2n/3}+E\,10^{n/3}+F\]
+        
+        we perform the nine small multiplications
+        \[AD,\ AE,\ AF,\ BD,\ BE,\ BF,\ CD,\ CE,\ CF,\]
+        and align them according to their place weights
+        
+        
+        Grouping equal
+        shifts gives
+        \[
+        \begin{aligned}
+        XY
+        &= (AD)\,10^{4n/3}
+         + (AE+BD)\,10^{n}
+         + (AF+BE+CD)\,10^{2n/3}\\
+        &\quad + (BF+CE)\,10^{n/3}
+         + (CF)
+        \end{aligned}
+        \]
+    
+
+        
+    \end{solution}
+
+
+    
+    \item (10 points) Show how to reduce this number to 6 multiplications using interpolation similar to Karatsuba. 
+
+    \begin{solution}
+        \vspace{0.5 cm}
+        
+        Def
+        \[P(x) = A x^2 + B x + C\]
+        \[Q(x) = D x^2 + E x + F\]
+        where $x = 10^{n/3}$
+        
+        % The goal is to compute the product $R(x) = P(x)Q(x)$, whose coefficients correspond to the terms of the final result
+        
+        % Direct expansion requires 9 multiplications, but through interpolation techniques, it can be reduced to 6
+        Let $R(x) = P(x)\cdot Q(x)$
+        
+        Def
+        \begin{align*}
+            m_1 &= A \cdot D \\
+            m_2 &= C \cdot F \\
+            m_3 &= (A + C) \cdot (D + F) \\
+            m_4 &= (A + B) \cdot (D + E) \\
+            m_5 &= (B + C) \cdot (E + F) \\
+            m_6 &= (A + B + C) \cdot (D + E + F)
+        \end{align*}
+    
+        These products correspond to evaluations of the polynomials at specific points, 
+        
+        
+        And through algebraic combinations, we can derive the coefficients of $R(x)$:
+        \begin{align*}
+            a &= m_1 \\
+            b &= m_6 - m_5 + m_2 - m_3 \\
+            c &= 2m_3 + m_4 + m_5 - 2m_1 - 2m_2 - m_6 \\
+            d &= m_1 - m_4 + m_6 - m_3 \\
+            e &= m_2
+        \end{align*}
+    
+
+        
+        $$
+        X \cdot Y = a \cdot 10^{4n/3} + b \cdot 10^n + c \cdot 10^{2n/3} + d \cdot 10^{n/3} + e
+        $$
+        
+
+    
+    \end{solution}
+
+    
+    % \newpage
+
+    \item (10 points) Describe the recurrence relation to find the time complexity of the three-way Karatsuba, and give its asymptotic complexity.
+
+    \begin{solution}
+        \vspace{0.5cm}
+
+        From (2), we have,
+        $$T(n) = 6T(n/3)+\mathcal{O}(n)$$
+        
+        $$T(n/3) = 6T(n/9) + c(n/3)$$
+        
+        \[
+        T(n) = 6\left[6T(n/9) + c\cdot\frac{n}{3}\right] + cn = 6^2 T(n/9) + 2cn + cn
+        \]
+        
+        \[
+        T(n) = 6^2\left[6T(n/27) + c\cdot\frac{n}{9}\right] + cn(1 + 2) = 6^3 T(n/27) + 4cn + cn(1 + 2)
+        \]
+        
+        After three steps:
+        \[
+        T(n) = 6^3 T(n/27) + cn(1 + 2 + 4)
+        \]
+        
+        After $k$ iterations:
+        
+        \[
+        T(n) = 6^k T\left(\frac{n}{3^k}\right) + cn \sum_{i=0}^{k-1} 2^i
+        \]
+        
+        The geometric sum evaluates to:
+        \[
+        \sum_{i=0}^{k-1} 2^i = 2^k - 1
+        \]
+        
+        Thus:
+        \[
+        T(n) = 6^k T\left(\frac{n}{3^k}\right) + cn(2^k - 1)
+        \]
+        
+        We stop when the argument of $T$ becomes 1:
+        
+        \[
+        \frac{n}{3^k} = 1 \quad \Rightarrow \quad k = \log_3 n
+        \]
+        
+        Substitute $k = \log_3 n$
+        
+        \[
+        T(n) = 6^{\log_3 n} T(1) + cn\left(2^{\log_3 n} - 1\right)
+        \]
+        
+        Using the identity $a^{\log_b c} = c^{\log_b a}$
+        
+        \[
+        6^{\log_3 n} = n^{\log_3 6}, \quad 2^{\log_3 n} = n^{\log_3 2}
+        \]
+        
+        So
+        
+        \[
+        T(n) = d \cdot n^{\log_3 6} + c n \cdot n^{\log_3 2} - cn = d \cdot n^{\log_3 6} + c n^{1 + \log_3 2} - cn
+        \]
+        
+        Note that:
+        
+        \[
+        1 + \log_3 2 = \log_3 3 + \log_3 2 = \log_3 6
+        \]
+        
+        Hence:
+        \[
+        T(n) = (d + c) n^{\log_3 6} - cn
+        \]
+                
+        Since $\log_3 6 \approx 1.631 > 1$, the term $n^{\log_3 6}$ dominates, and we conclude:
+        \[
+        T(n) = \Theta(n^{\log_3 6})
+        \]
+
+    \end{solution}
+
+    \item (Honors Problem, *, 0 points)) Compare the time complexity derived above to if you were to use 2-way Karatsuba to find the product. Under what conditions, if any, is the 3-way version faster?
+
+    \begin{solution}
+        \vspace{4cm}
+    \end{solution}
+\end{enumerate}
